@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Countdown Timer</title>
+    <style>
+        body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f5f5f5;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+body{
+    background-color: black;
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+
+.timer-container {
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
+    text-align: center;
+}
+
+.timer-title {
+    font-size: 24px;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.timer-controls {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.control-label {
+    font-size: 18px;
+    color: #555;
+    margin-right: 10px;
+}
+
+.control-input {
+    width: 70px;
+    padding: 5px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.control-button {
+    padding: 10px 20px;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+    border-radius: 4px;
+    margin: 0 10px;
+}
+
+.primary-button {
+    background-color: #007bff;
+    color: #fff;
+}
+
+.primary-button:hover {
+    background-color: #0056b3;
+}
+
+.secondary-button {
+    background-color: #ccc;
+    color: #333;
+}
+
+.secondary-button:hover {
+    background-color: #999;
+}
+
+.danger-button {
+    background-color: #dc3545;
+    color: #fff;
+}
+
+.danger-button:hover {
+    background-color: #c82333;
+}
+
+.timer-display {
+    margin-top: 20px;
+}
+
+.time-remaining {
+    font-size: 20px;
+    color: #333;
+}
+
+.timer-3d {
+    perspective: 1000px;
+    margin-top: 20px;
+}
+
+.timer-3d-content {
+    transform: rotateY(0deg);
+    background-color: #007bff;
+    color: #fff;
+    text-align: center;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotateY(0deg);
+    }
+    100% {
+        transform: rotateY(360deg);
+    }
+}
+
+
+    </style>
+</head>
+<body>
+    <div class="timer-container">
+        <h2 class="timer-title">Countdown Timer</h2>
+        <div class="timer-controls">
+            <label for="timeInput" class="control-label">Set time (seconds):</label>
+            <input type="number" id="timeInput" class="control-input" placeholder="Enter time">
+            <button id="startButton" class="control-button primary-button">Start</button>
+            <button id="stopButton" class="control-button danger-button">Stop</button>
+            <button id="resetButton" class="control-button secondary-button">Reset</button>
+            <button id="restartButton" class="control-button primary-button">Restart</button>
+        </div>
+        <div class="timer-display">
+            <div class="timer-3d">
+                    <div class="timer-3d-content">
+                        <p class="time-remaining">Time remaining: <span id="timeRemaining">00:00:00</span></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+    const timeInput = document.getElementById('timeInput');
+    const startButton = document.getElementById('startButton');
+    const stopButton = document.getElementById('stopButton');
+    const resetButton = document.getElementById('resetButton');
+    const restartButton = document.getElementById('restartButton');
+    const timeRemainingSpan = document.getElementById('timeRemaining');
+
+    let countdownInterval;
+    let remainingTime = 0;
+    let isRunning = false;
+
+    function updateDisplay() {
+        const hours = Math.floor(remainingTime / 3600);
+        const minutes = Math.floor((remainingTime % 3600) / 60);
+        const seconds = remainingTime % 60;
+
+        const formattedTime = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+        timeRemainingSpan.textContent = formattedTime;
+    }
+
+    function startTimer() {
+        if (!isRunning && remainingTime > 0) {
+            countdownInterval = setInterval(function () {
+                if (remainingTime <= 0) {
+                    clearInterval(countdownInterval);
+                    isRunning = false;
+                    updateDisplay();
+                    return;
+                }
+                remainingTime--;
+                updateDisplay();
+            }, 1000);
+            isRunning = true;
+        }
+    }
+
+    function stopTimer() {
+        clearInterval(countdownInterval);
+        isRunning = false;
+    }
+
+    function resetTimer() {
+        stopTimer();
+        remainingTime = 0;
+        updateDisplay();
+    }
+
+    function restartTimer() {
+        stopTimer();
+        remainingTime = parseInt(timeInput.value);
+        updateDisplay();
+    }
+
+    startButton.addEventListener('click', startTimer);
+    stopButton.addEventListener('click', stopTimer);
+    resetButton.addEventListener('click', resetTimer);
+    restartButton.addEventListener('click', restartTimer);
+
+    timeInput.addEventListener('input', function () {
+        const inputTime = parseInt(this.value);
+        if (!isNaN(inputTime)) {
+            remainingTime = inputTime;
+            updateDisplay();
+        }
+    });
+});
+
+    </script>
+</body>
+</html>
